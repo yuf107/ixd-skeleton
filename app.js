@@ -8,11 +8,13 @@ var http = require('http');
 var path = require('path');
 var handlebars = require('express3-handlebars')
 
+var net = require('net');
+var hello = require('./routes/hello');
+var add = require('./routes/add');
 var index = require('./routes/index');
-// Example route
-// var user = require('./routes/user');
 
 var app = express();
+var fs = require('fs');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -24,7 +26,7 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(express.cookieParser('IxD secret key'));
+app.use(express.cookieParser('Intro HCI secret key'));
 app.use(express.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -34,10 +36,21 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', index.view);
+// Add routes here
+app.get('/', hello.view);
+
+app.get('/hello/:userName', hello.view);
+app.get('/add', add.view);
+app.get('/index', index.view);
 // Example route
 // app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+function writeToTxt(){
+	var txt = app.getElementByIdSync("event").value();
+	console.log(txt);
+	console.log('1');
+};
